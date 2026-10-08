@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sannidhanam – Ayyappa Bhakti Songs</title>
+<meta name="description" content="Swamiye Saranam Ayyappa. Ayyappa devotional songs with temple bell, sharanam and forest breeze.">
+<meta property="og:title" content="Sannidhanam">
+<meta property="og:description" content="Ayyappa devotional songs with temple bell, sharanam and forest breeze.">
+<meta property="og:image" content="bg.jpg">
+<style>
+:root{--gold:#f5c46b;--glass:rgba(10,6,2,.62)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff4de;background:#000;overflow-x:hidden}
+#bg{position:fixed;inset:0;background:#000 center/cover no-repeat;z-index:-2;transition:background-image .6s}
+#shade{position:fixed;inset:0;z-index:-1;background:linear-gradient(to bottom,rgba(0,0,0,.35),rgba(0,0,0,.2) 35%,rgba(0,0,0,.8))}
+main{max-width:520px;margin:0 auto;min-height:100%;padding:22px 16px 40px;display:flex;flex-direction:column;gap:14px}
+header{text-align:center;padding-top:4px}
+.om{font-size:13px;letter-spacing:.35em;color:var(--gold);text-transform:uppercase}
+h1{font-size:34px;letter-spacing:.18em;margin:4px 0;color:var(--gold);text-shadow:0 2px 18px #000}
+.sub{opacity:.85;font-size:14px}
+.card{background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(245,196,107,.25);border-radius:16px;padding:14px}
+#yt-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+#yt-wrap iframe{position:absolute;inset:0;width:100%;height:100%}
+#title{font-weight:600;margin:10px 0 6px;font-size:16px}
+.bar{height:6px;background:rgba(255,255,255,.2);border-radius:3px;cursor:pointer;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--gold)}
+.time{display:flex;justify-content:space-between;font-size:12px;opacity:.8;margin-top:4px}
+.ctrl{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:8px}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid rgba(245,196,107,.35);background:rgba(255,255,255,.07);border-radius:999px;padding:9px 16px;transition:.2s}
+button:hover{background:rgba(245,196,107,.2)}
+button.on{background:var(--gold);color:#2a1700;border-color:var(--gold);font-weight:700}
+.round{width:46px;height:46px;padding:0;font-size:18px}
+.play{width:60px;height:60px;font-size:24px;background:var(--gold);color:#2a1700;border-color:var(--gold)}
+.row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.sl{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:10px;justify-content:center}
+input[type=range]{accent-color:var(--gold);width:140px}
+h2{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.song{display:flex;align-items:center;gap:8px;padding:9px 6px;border-radius:10px;cursor:pointer}
+.song:hover{background:rgba(255,255,255,.08)}
+.song.cur{background:rgba(245,196,107,.18)}
+.song span{flex:1;font-size:14px}
+.song .x{padding:2px 9px;font-size:13px}
+input[type=text]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(245,196,107,.35);background:rgba(0,0,0,.45);color:#fff;font:inherit;margin-bottom:8px}
+.hint{font-size:12px;opacity:.7;margin-top:6px}
+footer{text-align:center;font-size:12px;opacity:.65;margin-top:auto;padding-top:10px}
+#fx{position:fixed;left:50%;top:18%;transform:translateX(-50%);font-size:46px;opacity:0;pointer-events:none;transition:opacity .4s;z-index:5;text-shadow:0 0 20px var(--gold)}
+</style>
+</head>
+<body>
+<div id="bg"></div><div id="shade"></div><div id="fx">🔔</div>
+<main>
+  <header>
+    <div class="om">ॐ സ്വാമിയേ ശരണമയ്യപ്പ ॐ</div>
+    <h1>SANNIDHANAM</h1>
+    <div class="sub">Ayyappa bhakti songs</div>
+  </header>
+
+  <section class="card">
+    <div id="yt-wrap"><div id="player"></div></div>
+    <div id="title">Loading…</div>
+    <div class="bar" id="bar"><i id="fill"></i></div>
+    <div class="time"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+    <div class="ctrl">
+      <button class="round" id="prev" title="Previous (J)">⏮</button>
+      <button class="round play" id="pp" title="Play / Pause (P)">▶</button>
+      <button class="round" id="next" title="Next (K)">⏭</button>
+    </div>
+    <div class="sl">🔊 <input type="range" id="vol" min="0" max="100" value="80"></div>
+  </section>
+
+  <section class="card">
+    <h2>Ambience</h2>
+    <div class="row">
+      <button id="btnShar">🙏 Sharanam: Off</button>
+      <button id="btnBell">🔔 Temple Bell</button>
+      <button id="btnWind">🍃 Breeze: Off</button>
+    </div>
+    <div class="sl">🙏 <input type="range" id="vShar" min="0" max="100" value="60">
+      🍃 <input type="range" id="vWind" min="0" max="100" value="35"></div>
+    <div class="hint" style="text-align:center">Keys: P play · K next · J prev · B bell · S sharanam · W breeze</div>
+  </section>
+
+  <section class="card">
+    <h2>Songs</h2>
+    <div id="list"></div>
+  </section>
+
+  <section class="card">
+    <h2>Update</h2>
+    <input type="text" id="url" placeholder="Paste YouTube link to add a song">
+    <input type="text" id="name" placeholder="Song name (optional)">
+    <div class="row">
+      <button id="add">＋ Add song</button>
+      <button id="chbg">🖼 Change background</button>
+      <button id="rsbg">Reset background</button>
+      <button id="rsl">Reset songs</button>
+    </div>
+    <input type="file" id="file" accept="image/*" hidden>
+    <div class="hint">Changes are saved in this browser. To change them for everyone, edit <b>DEFAULT_SONGS</b> in this file.</div>
+  </section>
+  <footer>സ്വാമിയേ ശരണമയ്യപ്പ 🙏 · sannidhanam.ivde</footer>
+</main>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+/* ===== EDIT THIS LIST to change songs for every visitor ===== */
+const DEFAULT_SONGS=[
+  {id:"k7OTezEqOh0",title:"Ayyappa Song 1"},
+  {id:"tH0gh-Hdq4M",title:"Ayyappa Song 2"}
+];
+/* Optional: put your own sharanam recording next to index.html as sharanam.mp3 */
+const SHARANAM_FILE="sharanam.mp3";
+/* =============================================================== */
+
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+             set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+let songs=store.get("songs",DEFAULT_SONGS), idx=0, player, ready=false, tick;
+
+/* ---------- background ---------- */
+function applyBg(){ $("bg").style.backgroundImage=`url("${store.get("bg",null)||"bg.jpg"}")`; }
+applyBg();
+$("chbg").onclick=()=>$("file").click();
+$("file").onchange=e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const img=new Image(); img.onload=()=>{
+    const s=Math.min(1,2000/Math.max(img.width,img.height));
+    const c=document.createElement("canvas"); c.width=img.width*s; c.height=img.height*s;
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    const d=c.toDataURL("image/jpeg",.88);
+    if(!store.set("bg",d)) $("bg").style.backgroundImage=`url("${d}")`; else applyBg();
+  }; img.src=URL.createObjectURL(f);
+};
+$("rsbg").onclick=()=>{localStorage.removeItem("bg");applyBg()};
+
+/* ---------- playlist ---------- */
+function ytId(u){const m=u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);return m?m[1]:(/^[\w-]{11}$/.test(u.trim())?u.trim():null)}
+async function fetchTitle(id){
+  try{const r=await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${id}`);const j=await r.json();return j.title||null}catch(e){return null}
+}
+function render(){
+  $("list").innerHTML="";
+  songs.forEach((s,i)=>{
+    const d=document.createElement("div"); d.className="song"+(i===idx?" cur":"");
+    d.innerHTML=`<span>${i===idx?"▶ ":""}${s.title.replace(/</g,"&lt;")}</span><button class="x" title="Remove">✕</button>`;
+    d.onclick=()=>load(i);
+    d.querySelector(".x").onclick=e=>{e.stopPropagation();songs.splice(i,1);if(idx>=songs.length)idx=0;store.set("songs",songs);render()};
+    $("list").appendChild(d);
+  });
+  if(!songs.length) $("list").innerHTML='<div class="hint">No songs. Add one below.</div>';
+}
+async function backfill(){ // replace placeholder names with real YouTube titles
+  let ch=false;
+  for(const s of songs){ if(/^Ayyappa Song \d$/.test(s.title)){const t=await fetchTitle(s.id); if(t){s.title=t;ch=true}} }
+  if(ch){store.set("songs",songs);render();updTitle()}
+}
+function updTitle(){ $("title").textContent=songs[idx]?songs[idx].title:"—" }
+function load(i){
+  if(!songs.length)return; idx=(i+songs.length)%songs.length; render(); updTitle();
+  if(ready) player.loadVideoById(songs[idx].id);
+}
+$("add").onclick=async()=>{
+  const id=ytId($("url").value); if(!id){alert("Please paste a valid YouTube link");return}
+  let t=$("name").value.trim()||await fetchTitle(id)||"Ayyappa Song "+(songs.length+1);
+  songs.push({id,title:t}); store.set("songs",songs); $("url").value="";$("name").value="";render();
+  if(songs.length===1)load(0);
+};
+$("rsl").onclick=()=>{if(confirm("Reset song list?")){localStorage.removeItem("songs");songs=[...DEFAULT_SONGS];idx=0;render();load(0);backfill()}};
+
+/* ---------- YouTube player ---------- */
+window.onYouTubeIframeAPIReady=()=>{
+  player=new YT.Player("player",{width:"100%",height:"100%",videoId:songs[0]?songs[0].id:"",
+    playerVars:{playsinline:1,rel:0,modestbranding:1},
+    events:{onReady:()=>{ready=true;player.setVolume($("vol").value);
+              tick=setInterval(progress,500)},
+            onStateChange:e=>{ $("pp").textContent=(e.data===1)?"⏸":"▶"; if(e.data===0)load(idx+1)}}});
+};
+const fmt=s=>{s=Math.floor(s||0);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+function progress(){ if(!ready||!player.getDuration)return;
+  const c=player.getCurrentTime(),d=player.getDuration();
+  $("cur").textContent=fmt(c);$("dur").textContent=fmt(d);$("fill").style.width=(d?c/d*100:0)+"%"}
+$("bar").onclick=e=>{if(!ready)return;const r=$("bar").getBoundingClientRect();player.seekTo(player.getDuration()*(e.clientX-r.left)/r.width,true)};
+const toggle=()=>{if(!ready)return;player.getPlayerState()===1?player.pauseVideo():player.playVideo()};
+$("pp").onclick=toggle; $("next").onclick=()=>load(idx+1); $("prev").onclick=()=>load(idx-1);
+$("vol").oninput=e=>ready&&player.setVolume(e.target.value);
+
+/* ---------- ambience (Web Audio) ---------- */
+let ctx; const A=()=>ctx||(ctx=new (window.AudioContext||window.webkitAudioContext)());
+
+// Temple bell: inharmonic partials with long decay
+function bell(){
+  const c=A(); if(c.state==="suspended")c.resume();
+  const t=c.currentTime, out=c.createGain(); out.gain.value=.55; out.connect(c.destination);
+  [[520,1,5],[1040*1.0,.55,4],[1390,.45,3],[2210,.3,2.2],[3150,.18,1.5],[261,.5,6]].forEach(([f,g,dec])=>{
+    const o=c.createOscillator(),e=c.createGain(); o.type="sine"; o.frequency.value=f*(1+Math.random()*.003);
+    e.gain.setValueAtTime(0,t); e.gain.linearRampToValueAtTime(g,t+.005); e.gain.exponentialRampToValueAtTime(.0001,t+dec);
+    o.connect(e);e.connect(out);o.start(t);o.stop(t+dec+.1);
+  });
+  const fx=$("fx");fx.style.opacity=1;setTimeout(()=>fx.style.opacity=0,900);
+}
+$("btnBell").onclick=bell;
+
+// Breeze: looping filtered noise with slow gusts
+let wind=null;
+function startWind(){
+  const c=A(); if(c.state==="suspended")c.resume();
+  const buf=c.createBuffer(1,c.sampleRate*4,c.sampleRate),d=buf.getChannelData(0);
+  let b0=0;for(let i=0;i<d.length;i++){b0=.98*b0+.02*(Math.random()*2-1);d[i]=b0*6} // brown-ish noise
+  const src=c.createBufferSource();src.buffer=buf;src.loop=true;
+  const f=c.createBiquadFilter();f.type="bandpass";f.frequency.value=600;f.Q.value=.6;
+  const g=c.createGain();g.gain.value=$("vWind").value/100*.8;
+  const lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=.12;lg.gain.value=300;lfo.connect(lg);lg.connect(f.frequency);
+  const lfo2=c.createOscillator(),lg2=c.createGain();lfo2.frequency.value=.2;lg2.gain.value=.25;lfo2.connect(lg2);lg2.connect(g.gain);
+  src.connect(f);f.connect(g);g.connect(c.destination);src.start();lfo.start();lfo2.start();
+  wind={src,g,stop(){[src,lfo,lfo2].forEach(n=>n.stop())}};
+}
+$("btnWind").onclick=()=>{
+  if(wind){wind.stop();wind=null}else startWind();
+  $("btnWind").classList.toggle("on",!!wind);$("btnWind").textContent="🍃 Breeze: "+(wind?"On":"Off");
+};
+$("vWind").oninput=e=>wind&&(wind.g.gain.value=e.target.value/100*.8);
+
+// Sharanam: plays sharanam.mp3 on loop if present, otherwise chants via the browser's voice
+let sharOn=false, sharAudio=null, speakTimer=null;
+function speakOnce(){
+  if(!sharOn||!("speechSynthesis" in window))return;
+  const u=new SpeechSynthesisUtterance("Swamiye Saranam Ayyappa");
+  const v=speechSynthesis.getVoices().find(v=>/ml|hi|en-IN/i.test(v.lang));
+  if(v)u.voice=v; u.lang=v?v.lang:"en-IN"; u.rate=.7; u.pitch=.7; u.volume=$("vShar").value/100;
+  u.onend=()=>{if(sharOn)speakTimer=setTimeout(speakOnce,1200)}; speechSynthesis.speak(u);
+}
+function setShar(on){
+  sharOn=on; $("btnShar").classList.toggle("on",on); $("btnShar").textContent="🙏 Sharanam: "+(on?"On":"Off");
+  if(on){
+    sharAudio=new Audio(SHARANAM_FILE); sharAudio.loop=true; sharAudio.volume=$("vShar").value/100;
+    sharAudio.onerror=()=>{sharAudio=null;speakOnce()};
+    sharAudio.play().catch(()=>{});
+  }else{
+    if(sharAudio){sharAudio.pause();sharAudio=null}
+    clearTimeout(speakTimer); if("speechSynthesis" in window)speechSynthesis.cancel();
+  }
+}
+$("btnShar").onclick=()=>setShar(!sharOn);
+$("vShar").oninput=e=>{if(sharAudio)sharAudio.volume=e.target.value/100};
+
+/* ---------- keyboard ---------- */
+document.addEventListener("keydown",e=>{
+  if(/INPUT|TEXTAREA/.test(e.target.tagName))return;
+  const k=e.key.toLowerCase();
+  if(k==="p"||k===" "){e.preventDefault();toggle()} else if(k==="k")load(idx+1); else if(k==="j")load(idx-1);
+  else if(k==="b")bell(); else if(k==="s")setShar(!sharOn); else if(k==="w")$("btnWind").click();
+});
+
+render();updTitle();backfill();
+</script>
+</body>
+</html>
